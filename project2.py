@@ -45,15 +45,6 @@ def Train(args, num_features, timestep, signal_count, num_epochs):
   #get training data
   x_train, y_train, x_valid, y_valid = GetData(args, timestep, signal_count)
 
-  print('Fx_train shape:', x_train.shape)
-  print('Fy_train shape:', y_train.shape)
-  print('Fx_valid shape:', x_valid.shape)
-  print('Fy_valid shape:', y_valid.shape)
-  print('Fx_train type:', x_train.dtype)
-  print('Fy_train type:', y_train.dtype)
-  print('Fx_valid type:', x_valid.dtype)
-  print('Fy_valid type:', y_valid.dtype)
-
   #make the model
   model = MakeModel(num_features, timestep, signal_count)
   #train model

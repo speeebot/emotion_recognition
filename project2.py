@@ -8,9 +8,9 @@ np.set_printoptions(threshold=sys.maxsize)
 def MakeModel(num_features, timestep):
   #create sequential model
   model = tf.keras.models.Sequential()
-  model.add(tf.keras.layers.LSTM(64, input_shape=(1, 1000), activation='relu', return_sequences=True))
+  model.add(tf.keras.layers.LSTM(num_features, input_shape=(1, 1000), activation='relu', return_sequences=True))
   model.add(tf.keras.layers.Dropout(0.2))
-  model.add(tf.keras.layers.LSTM(32, activation='sigmoid'))
+  model.add(tf.keras.layers.LSTM(int(num_features/2), activation='sigmoid'))
   model.add(tf.keras.layers.Dropout(0.2))
   model.add(tf.keras.layers.Dense(10, activation='sigmoid'))
   model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy']) 

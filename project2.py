@@ -5,7 +5,7 @@ np.set_printoptions(threshold=sys.maxsize)
 #1: Happy, 2: Surprised, 3: Sad, 4: Startled/Surprised, 5: Skeptical
 #6: Embarrassed, 7: Scared/Nervous, 8: Physical Pain, 9: Angry, 10: Disgusted
 
-def MakeModel(num_features, timestep, signal_count):
+def MakeModel(num_features, timestep):
   #create sequential model
   model = tf.keras.models.Sequential()
   model.add(tf.keras.layers.LSTM(64, input_shape=(1, 1000), activation='relu', return_sequences=True))
@@ -40,15 +40,15 @@ def Predict(model, x_test, y_test):
   print("Micro F1 score: ", f1_micro)
   print(confMat)
 
-def Train(args, num_features, timestep, signal_count, num_epochs):
+def Train(args, num_features, timestep, num_epochs):
   print("Loading Training Data")
   #get training data
-  x_train, y_train, x_valid, y_valid = GetData(args, timestep, signal_count)
+  x_train, y_train, x_valid, y_valid = GetData(args, timestep)
 
   #make the model
-  model = MakeModel(num_features, timestep, signal_count)
+  model = MakeModel(num_features, timestep)
   #train model
-  model.fit(x_train, y_train, 
+  history = model.fit(x_train, y_train, 
             batch_size=num_features, 
             epochs=num_epochs,
             validation_data=(x_valid, y_valid),
@@ -56,10 +56,12 @@ def Train(args, num_features, timestep, signal_count, num_epochs):
   #save model
   model.save("./models/"+args.model_name+".h5")
   print("Model saved.")
+  
+  return history
 
-def Test(args, timestep, signal_count):
+def Test(args, timestep):
   print("Loading Test Data")
-  x_test, y_test = GetData(args, timestep, signal_count)
+  x_test, y_test = GetData(args, timestep)
   print("Loading model")
   model = tf.keras.models.load_model("./models/"+args.model_name+".h5")
   print("Making predictions on test data")
@@ -72,12 +74,12 @@ def main():
   num_epochs = 50
   num_features = 64
   timestep = 1000
-  signal_count = 1000
 
   if args.testOrTrain == "train":
-    Train(args, num_features, timestep, signal_count, num_epochs)
+    history = Train(args, num_features, timestep, num_epochs)
+    plot_results(history)
   elif args.testOrTrain == "test":
-    Test(args, timestep, signal_count)
+    Test(args, timestep)
 
 if __name__ == "__main__":
   main()

@@ -2,6 +2,9 @@ import argparse, os, sys
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+plt.switch_backend('svg')
 from parse import parse
 from sklearn import preprocessing
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
@@ -74,7 +77,7 @@ def normalize_data(data):
   else:
     return data
 
-def GetData(args, timestep, signal_count):
+def GetData(args, timestep):
   data_type = args.data_type
   data_path = args.data_directory_path
   #map user inputs to their file name equivalents
@@ -167,3 +170,20 @@ def GetData(args, timestep, signal_count):
     return x_test, y_test
   else:
     return x_train, y_train, x_test, y_test
+
+def plot_results(history):
+  plt.plot(history.history['accuracy'])
+  plt.plot(history.history['val_accuracy'])
+  plt.title('Model Accuracy on Diastolic Blood Pressure Datatype')
+  plt.xlabel('Epoch')
+  plt.ylabel('Accuracy')
+  plt.legend(['Train', 'Test'], loc='upper left')
+  plt.savefig('figures/fig1_accuracy')
+  plt.clf()
+  plt.plot(history.history['loss'])
+  plt.plot(history.history['val_loss'])
+  plt.title('Model Loss on Diastolic Blood Pressure Datatype')
+  plt.xlabel('Epoch')
+  plt.ylabel('Loss')
+  plt.legend(['Train', 'Test'], loc='upper left')
+  plt.savefig('figures/fig2_loss') 
